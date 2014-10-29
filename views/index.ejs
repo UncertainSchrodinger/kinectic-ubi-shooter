@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body {
+        background-color: #EDDCA5;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      h1 {
+        font-size: 4.5em;
+        text-align: center;
+        color: #5D2A4B;
+      }
+
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300px;
+        height: 300px;
+        margin-top: -150px;
+        margin-left: -150px;
+      }
+
+      .divider {
+        position: absolute;
+        top: -40px;
+        background-color: #573D4E;
+        width: 2px;
+        height: 450px;
+        margin: 0 10em;
+        float: left;
+      }
+
+      .control-wrapper {
+        position: relative;
+        min-width: 300px;
+        min-height: 300px;
+        float: left;
+      }
+
+      .control-text {
+        font-family: ‘Metrophobic’, Arial, serif;
+        font-weight: 400;
+        font-size: 2.25em;
+        color: #5D2A4B;
+
+        position: absolute;
+        bottom: -84px;
+        left: -60px;
+        margin: 0;
+        width: 420px;
+        text-align: center;
+      }
+
+      .container {
+        margin-top: 7em;
+        height: 600px;
+        width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+    <title></title>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <h1>Ubishooter</h1>
+
+    <div class="container">
+      <div class="control-wrapper">
+        <img src="/imgs/kinect.svg" alt="gesture" />
+        <h2 class="control-text">
+          Click to play with gestures
+        </h2>
+      </div>
+      <div class="control-wrapper">
+        <div class="divider"></div>
+      </div>
+      <div class="control-wrapper">
+        <img src="/imgs/qrcode.png" alt="gestures" />
+        <h2 class="control-text">
+          Scan to play with phone
+        </h2>
+      </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <%- js("connection") %>
+    <%- js("controller") %>
+    <%- js("game") %>
+  </body>
+</html>
