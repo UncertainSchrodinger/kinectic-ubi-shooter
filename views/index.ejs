@@ -80,7 +80,7 @@
       <div class="control-wrapper">
         <div class="divider"></div>
       </div>
-      <div class="control-wrapper">
+      <div id="qr-code" class="control-wrapper">
         <img src="/imgs/qrcode.png" alt="gestures" />
         <h2 class="control-text">
           Scan to play with phone
@@ -90,6 +90,7 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/qrcode.min.js"></script>
     <%- js("connection") %>
     <%- js("controller") %>
     <%- js("game") %>
