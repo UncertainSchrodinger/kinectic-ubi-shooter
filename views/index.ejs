@@ -72,15 +72,17 @@
 
     <div class="container">
       <div class="control-wrapper">
-        <img src="/imgs/kinect.svg" alt="gesture" />
-        <h2 class="control-text">
-          Click to play with gestures
-        </h2>
+        <a href="/game/<%= channelId %>?gestures=true">
+          <img src="/imgs/kinect.svg" alt="gesture" />
+          <h2 class="control-text">
+            Click to play with gestures
+          </h2>
+        </a>
       </div>
       <div class="control-wrapper">
         <div class="divider"></div>
       </div>
-      <div id="qr-code" class="control-wrapper">
+      <div id="qr-code" class="control-wrapper" data-channel="<%= channelId %>">
         <img src="/imgs/qrcode.png" alt="gestures" />
         <h2 class="control-text">
           Scan to play with phone

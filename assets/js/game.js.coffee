@@ -16,4 +16,11 @@ qr = new QRCode "qr-code", {
   correctLevel : QRCode.CorrectLevel.H
 }
 
-qr.makeCode('http://www.google.com')
+channelId = $('#qr-code').data('channel');
+
+qr.makeCode('http://192.168.0.104:3000/controller/' + channelId)
+
+connection = new Connection
+
+connection.onPlayerJoined ->
+  window.location.pathname = '/game/' + channelId

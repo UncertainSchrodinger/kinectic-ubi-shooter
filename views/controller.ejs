@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta charset="UTF-8">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
+
+    <style>
+      html, body, .controller-container {
+        height: 100%;
+      }
+
+      body {
+        background-color: #EDDCA5;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      .controller-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .huge-icon {
+        font-size: 10em;
+        margin: 0 auto;
+      }
+
+      button {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        color: #fff;
+        width: 200px;
+        height: 100px;
+        background-color: #428bca;
+        border-color: #357ebd;
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 2em;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+      }
+    </style>
+    <title>Controller</title>
+  </head>
+  <body>
+
+    <div class="controller-container">
+      <i id="move-left" class="fa fa-arrow-left huge-icon"></i>
+      <button id="replay">Replay</button>
+      <i id="move-right" class="fa fa-arrow-right huge-icon"></i>
+    </div>
+
+    <script src="/js/fastclick.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <%- js("connection") %>
+    <%- js("controller") %>
+    <%- js("controller_main") %>
+  </body>
+</html>

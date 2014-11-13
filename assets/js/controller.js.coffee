@@ -1,16 +1,22 @@
-KEY_LEFT = 37
-KEY_RIGHT = 39
-
 class Controller
   constructor: (@connection) ->
 
-  moveLeft: ->
-    @connection.sendMoveLeft()
+  startMoveLeft: ->
+    @connection.sendControllerState 
+      direction: 'left',
+      active: true
 
-  moveRight: ->
-    @connection.sendMoveRight()
+  stopMoveLeft: ->
+    @connection.sendControllerState 
+      direction: 'left',
+      active: false
 
-  handleKeyCode: (keyCode) ->
-    switch keyCode
-      when KEY_LEFT then @moveLeft()
-      when KEY_RIGHT then @moveRight()
+  startMoveRight: ->
+    @connection.sendControllerState 
+      direction: 'right',
+      active: true
+
+  stopMoveRight: ->
+    @connection.sendControllerState 
+      direction: 'right',
+      active: false
