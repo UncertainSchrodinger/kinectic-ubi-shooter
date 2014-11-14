@@ -18,7 +18,7 @@ qr = new QRCode "qr-code", {
 
 channelId = $('#qr-code').data('channel');
 
-qr.makeCode('http://192.168.0.104:3000/controller/' + channelId)
+qr.makeCode('http://192.168.1.121:3000/controller/' + channelId)
 
 connection = new Connection
 
