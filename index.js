@@ -6,7 +6,6 @@ var io = require('socket.io')(http);
 var redis = require("redis");
 var client = redis.createClient();
 
-/*
 var OpenNi = require('openni');
 var context = OpenNi();
 
@@ -64,7 +63,6 @@ setInterval(function() {
     });
   });
 }, 100);
-*/
 
 var GameSession = function(id) {
   this.id = id;
