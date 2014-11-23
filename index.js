@@ -4,15 +4,17 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var GameSession = require('./game_session.js')
 
-var redis = require("redis");
-var client = redis.createClient();
+var io = require('socket.io')(http);
 
 var OpenNi = require('openni');
 var context = OpenNi();
 
 var Vector = require('./vector');
+
+var mongoose = require('mongoose');
+var db = mongoose.connection;
 
 var leftHand = null;
 var leftShoulder = null;
@@ -101,46 +103,6 @@ setInterval(function() {
   });
 }, 50);
 
-var GameSession = function(id) {
-  this.id = id;
-  this.game = null;
-  this.player = null;
-}
-
-GameSession.prototype.setGame = function(game) {
-  this.game = game;
-
-  this.notifyGameStartIfNeeded();
-};
-
-GameSession.prototype.setPlayer = function(player) {
-  this.player = player;
-
-  io.emit('game player joined');
-
-  this.notifyGameStartIfNeeded();
-};
-
-GameSession.prototype.notifyGameStartIfNeeded = function() {
-  if (this.player && this.game) {
-    console.log("starting game");
-    this.game.emit('game start');
-    this.player.emit('game start');
-  }
-};
-
-var sessions = [];
-
-function findSessionWithId(id) {
-  for (var i = 0; i < sessions.length; i++) {
-    if (("" + sessions[i].id) == id) {
-      return sessions[i];
-    }
-  }
-
-  return null;
-}
-
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
@@ -150,76 +112,114 @@ app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function(socket) {
 
+  function fail(cb) {
+    cb({
+      status: false
+    });
+  }
+
+  function success(session, cb) {
+    cb({
+      status: true
+    });
+
+    // Check if we need to notify game start
+    if (session.canStartGame()) {
+      io.sockets.in(session.id).emit('game start');
+    }
+  }
+
   socket.on('controller state', function(state) {
-    socket.broadcast.emit('controller state', state);
+    socket.broadcast.to(socket.channelId).emit('controller state', state);
   });
 
   socket.on('game replay', function() {
-    socket.broadcast.emit('game replay');
+    socket.broadcast.to(socket.channelId).emit('game replay');
   });
 
   socket.on('join player', function(data, fn) {
-    console.log("found session", session);
-    var session = findSessionWithId(data.channel);
+    var id = data.channel;
 
-    if (session && !session.player) {
-      console.log("player joining session");
-      socket.channelId = data.channel;
-      socket.join(data.channel);
-
-      // Check if this is a gesture player and save socket
-      if (data.gestures) {
-        gestures.push(socket);
-
-        // Wait for calibration
-        context.on('calibrationsuccess', function(userId) {
-          socket.emit('game start');
-        });
-      } else {
-        session.setPlayer(socket);
+    GameSession.findById(id, function(err, session) {
+      // Most likely session was not found
+      if (err) {
+        return fail(fn);
       }
 
-      fn({
-        status: true
-      });
+      console.log("Found session", session);
 
-    } else {
-      fn({
-        status: false
-      });
-    }
+      if (!session.hasPlayer()) {
+        console.log("player joining session");
+        socket.channelId = id;
+        socket.join(id);
+
+        // Check if this is a gesture player and save socket
+        if (data.gestures) {
+          gestures.push(socket);
+
+          // Wait for calibration
+          context.on('calibrationsuccess', function(userId) {
+            socket.emit('game start');
+          });
+        } else {
+          session.playerId = socket.id;
+        }
+
+        session.save(function(err) {
+          if (err) {
+            console.log("Could not save session");
+            return fail(fn);
+          }
+
+          // Notify of new player
+          console.log("Sending player joined to ", id);
+          io.emit('game player joined');
+
+          success(session, fn);
+        });
+      }
+    });
   });
 
   socket.on('join game', function(data, fn) {
-    var session = findSessionWithId(data.channel);
-    console.log("found session", session);
+    var id = data.channel;
 
-    if (session && !session.game) {
-      console.log("game joining session");
-      session.setGame(socket);
-      socket.channelId = data.channel;
-      socket.join(data.channel);
+    GameSession.findById(id, function(err, session) {
+      if (err) {
+        console.log("Game could not join session!");
+        return fail(fn);
+      }
 
-      fn({
-        status: true
-      });
-    } else {
-      fn({
-        status: false
-      });
-    }
+      if (!session.hasGame()) {
+        console.log("Game joining session");
+
+        socket.channelId = id;
+        session.gameId = socket.id;
+        socket.join(id);
+
+        session.save(function(err, session) {
+          if (err) {
+            console.log("Could not save game to session!");
+            return fail(fn)
+          };
+
+          success(session, fn);
+        });
+      } else {
+        fail(fn);
+      }
+    });
   });
 });
 
 app.get('/', function(req, res) {
-  client.incr('id', function(err, id) {
-    var newSession = new GameSession(id);
-    sessions.push(newSession);
+  var currentSession = new GameSession();
 
-    console.log("Creating session for id", id);
+  currentSession.save(function(err, session) {
+    console.log("Creating session for id", session.id);
 
     res.render('index', {
-      channelId: id
+      channelId: session.id
     });
   });
 });
@@ -232,6 +232,12 @@ app.get('/controller/:id', function(req, res) {
   res.render('controller');
 });
 
-http.listen(3000, function() {
-  console.log('listening on *:3000');
+db.on('error', console.error.bind(console, 'connection error:'));
+
+db.once('open', function callback() {
+  console.log("Got database connection");
+
+  http.listen(3000, function() {
+    console.log('listening on *:3000');
+  });
 });
