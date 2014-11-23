@@ -33,3 +33,6 @@ $('#move-right').on 'touchend', ->
 
 $('#replay').click ->
   connection.replay()
+
+$('#quit').one "click", ->
+  connection.doEndGame()

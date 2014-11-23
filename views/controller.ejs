@@ -29,16 +29,15 @@
       }
 
       button {
+        display: block;
         margin-top: 5px;
-        margin-bottom: 5px;
+        margin-bottom: 2em;
         color: #fff;
         width: 200px;
         height: 100px;
         background-color: #428bca;
         border-color: #357ebd;
-        display: inline-block;
         padding: 6px 12px;
-        margin-bottom: 0;
         font-size: 2em;
         font-weight: 400;
         line-height: 1.42857143;
@@ -63,7 +62,10 @@
 
     <div class="controller-container">
       <i id="move-left" class="fa fa-arrow-left huge-icon"></i>
-      <button id="replay">Replay</button>
+      <div class="controls">
+        <button id="quit">Quit</button>
+        <button id="replay">Replay</button>
+      </div>
       <i id="move-right" class="fa fa-arrow-right huge-icon"></i>
     </div>
 

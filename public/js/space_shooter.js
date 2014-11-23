@@ -35,6 +35,7 @@ var game = new Game();
 
 var connection = new Connection();
 var channel = window.location.pathname.split('/').slice(-1)[0]
+var gameOverTimer = null;
 
 connection.onGameStart(function() {
   console.log("game started");
@@ -806,6 +807,9 @@ function Game() {
 
   // Start the animation loop
   this.start = function() {
+    // Clear gameover
+    clearTimeout(gameOverTimer);
+
     this.ship.draw();
     this.backgroundAudio.play();
     animate();
@@ -839,12 +843,31 @@ function Game() {
   };
 
   // Game over
-  this.gameOver = function() {
+  this.gameOver = function(force) {
     this.backgroundAudio.pause();
     this.gameOverAudio.currentTime = 0;
     this.gameOverAudio.play();
     document.getElementById('game-over').style.display = "block";
+
+    startGameOverTimer(force);
   };
+}
+
+function endGame() {
+  connection.notifyGameEnd(function() {
+    window.location.replace("/");
+  });
+}
+
+function startGameOverTimer(force) {
+  if (!force) {
+    // Go back after 30 seconds
+    gameOverTimer = setTimeout(function() {
+      endGame();
+    }, 1000 * 30);
+  } else {
+    endGame();
+  }
 }
 
 /**
@@ -982,18 +1005,24 @@ for (code in KEY_CODES) {
 connection.onNewControllerState(function(state) {
   switch (state.direction) {
     case 'left':
-      console.log("go left", state);
       toggleKey('left', state.active);
       break;
     case 'right':
-      console.log("go right", state);
       toggleKey('right', state.active);
       break;
   }
 });
 
+$('#quit').click(function() {
+  startGameOverTimer(true);
+});
+
 connection.onGameRestart(function() {
   game.restart();
+});
+
+connection.onGameShouldEnd(function() {
+  startGameOverTimer(true);
 });
 
 function toggleKey(key, state) {

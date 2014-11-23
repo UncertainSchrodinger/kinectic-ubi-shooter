@@ -10,7 +10,8 @@ var GameSession = mongoose.Schema({
   gameEndedAt: Date,
   gestureUsed: {
     type: String,
-    match: /kinect|mobile/
+    match: /kinect|mobile/,
+    default: 'mobile'
   },
   timesPlayed: Number,
   gameId: {
@@ -23,12 +24,6 @@ var GameSession = mongoose.Schema({
   }
 })
 
-GameSession.findById = function(id, cb) {
-  GameSession.findOne({
-    _id: id
-  }, cb);
-};
-
 GameSession.methods.canStartGame = function() {
   return !!this.gameId && !!this.playerId;
 };
@@ -39,6 +34,10 @@ GameSession.methods.hasGame = function() {
 
 GameSession.methods.hasPlayer = function() {
   return !!this.playerId;
+};
+
+GameSession.methods.markAsKinectGestureBased = function() {
+  this.gestureUsed = "kinect";
 };
 
 module.exports = mongoose.model('GameSession', GameSession);

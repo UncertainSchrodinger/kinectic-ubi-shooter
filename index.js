@@ -71,10 +71,14 @@ io.on('connection', function(socket) {
     });
   }
 
-  function success(session, cb) {
+  function ok(cb) {
     cb({
       status: true
     });
+  }
+
+  function success(session, cb) {
+    ok(cb);
 
     // Check if we need to notify game start
     if (session.canStartGame()) {
@@ -88,6 +92,38 @@ io.on('connection', function(socket) {
 
   socket.on('game replay', function() {
     socket.broadcast.to(socket.channelId).emit('game replay');
+
+    // Update game count
+    GameSession.findByIdAndUpdate(socket.channelId, {
+      $inc: {
+        timesPlayed: 1
+      }
+    }, function(err, sess) {
+      if (err) {
+        return console.log("Failed to update count", err);;
+      }
+
+      console.log("New replay count", sess);
+    });
+  });
+
+  socket.on('game end', function(data, fn) {
+
+    // Update game count
+    GameSession.findByIdAndUpdate(socket.channelId, {
+      gameEndedAt: Date.now()
+    }, function(err, sess) {
+      if (err) {
+        return fail(fn);
+      }
+
+      console.log("Game ended", sess);
+      ok(fn);
+    });
+  });
+
+  socket.on('game should end', function() {
+    socket.broadcast.to(socket.channelId).emit('game should end');
   });
 
   socket.on('join player', function(data, fn) {
@@ -109,6 +145,8 @@ io.on('connection', function(socket) {
         // Check if this is a gesture player and save socket
         if (data.gestures) {
           gestures.push(socket);
+
+          session.markAsKinectGestureBased();
 
           // Wait for calibration
           context.on('calibrationsuccess', function(userId) {

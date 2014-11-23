@@ -3,10 +3,15 @@
   <head>
     <title>Space Shooter Demo</title>
     <style>
-      canvas {
+      body {
+        background-color: black;
+      }
+      .game-view {
         position: absolute;
-        top: 0px;
-        left: 0px;
+        top: 50%;
+        left: 50%;
+        margin-top: -180px;
+        margin-left: -300px;
         background: transparent;
       }
       #background {
@@ -54,29 +59,67 @@
         font-size: 30px;
         cursor: default;
       }
+
+      button {
+        position: absolute;
+        left: 50%;
+        margin-left: -5%;
+        bottom: 5%;
+
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 2em;
+        color: #fff;
+        width: 10%;
+        height: 10%;
+        background-color: #428bca;
+        border-color: #357ebd;
+        padding: 6px 12px;
+        font-size: 2em;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+      }
     </style>
     <meta charset="UTF-8">
     <title></title>
   </head>
   <body>
     <!-- The canvas for the panning background -->
-    <canvas id="background" width="600" height="360">
+    <canvas class="game-view" id="background" width="600" height="360">
       Your browser does not support canvas. Please try again with a different browser.
     </canvas>
     <!-- The canvas for all enemy ships and bullets -->
-    <canvas id="main" width="600" height="360">
+    <canvas class="game-view" id="main" width="600" height="360">
     </canvas>
     <!-- The canvas the ship uses (can only move up
     one forth the screen. -->
-    <canvas id="ship" width="600" height="360">
+    <canvas class="game-view" id="ship" width="600" height="360">
     </canvas>
-    <div class="score">SCORE: <span id="score"></span></div>
-    <div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
-    <div class="loading" id="loading">LOADING...<p>Please wait</p></div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <%- js("connection") %>
-    <script src="/js/space_shooter.js"></script>
-  </body>
-</html>
+    <div class="game-view">
+      <div class="score">SCORE: <span id="score"></span></div>
+      <div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
+      <div class="loading" id="loading">LOADING...<p>Please wait</p></div>
+    </div>
+
+    <button id="quit">Quit</button>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+      <%- js("connection") %>
+      <script src="/js/space_shooter.js"></script>
+    </body>
+  </html>
