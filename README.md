@@ -9,4 +9,6 @@ For Kinect controls, click on the Kinect icon and start playing.
 
 # Running the game
 
+Requires node-openni, get it to compile and install with ```npm install <path>```
+
 Make sure you change the QR code address to something your mobile phone can access to in ```game.js.coffee```.
