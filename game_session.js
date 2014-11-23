@@ -24,16 +24,16 @@ var GameSession = mongoose.Schema({
   }
 })
 
-GameSession.methods.canStartGame = function() {
-  return !!this.gameId && !!this.playerId;
-};
-
 GameSession.methods.hasGame = function() {
   return !!this.gameId;
 };
 
 GameSession.methods.hasPlayer = function() {
   return !!this.playerId;
+};
+
+GameSession.methods.canStartGame = function() {
+  return this.hasGame() && this.hasPlayer();
 };
 
 GameSession.methods.markAsKinectGestureBased = function() {
