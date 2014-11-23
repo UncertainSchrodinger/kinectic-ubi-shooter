@@ -1,3 +1,6 @@
+// NOTE: On all the trig calculations we completely ignore depth
+// we don't really care about the z-axis
+
 var Vector = require('./vector');
 
 // Checks if the radians are between 22.5 to -22.5 degrees
@@ -21,7 +24,8 @@ function normalizedHand(x, y, z) {
   return new Vector(Math.abs(x), y, z);
 }
 
-function Body() {
+function Body(id) {
+  this.id = id;
   this.leftHand = null;
   this.leftShoulder = null;
 

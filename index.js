@@ -1,6 +1,3 @@
-// NOTE: On all the trig calculations we completely ignore depth
-//
-
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -19,22 +16,30 @@ var db = mongoose.connection;
 // List of sockets listening for gestures
 var gestures = [];
 
-var activeBody = new Body();
+var activeBody = new Body(0);
 
 context.on('left_shoulder', function(user, x, y, z) {
-  activeBody.setLeftShoulder(x, y, z);
+  if (user === activeBody.id) {
+    activeBody.setLeftShoulder(x, y, z);
+  }
 });
 
 context.on('left_hand', function(user, x, y, z) {
-  activeBody.setLeftHand(x, y, z);
+  if (user === activeBody.id) {
+    activeBody.setLeftHand(x, y, z);
+  }
 });
 
 context.on('right_shoulder', function(user, x, y, z) {
-  activeBody.setRightShoulder(x, y, z);
+  if (user === activeBody.id) {
+    activeBody.setRightShoulder(x, y, z);
+  }
 });
 
 context.on('right_hand', function(user, x, y, z) {
-  activeBody.setRightHand(x, y, z);
+  if (user === activeBody.id) {
+    activeBody.setRightHand(x, y, z);
+  }
 });
 
 setInterval(function() {
@@ -107,6 +112,11 @@ io.on('connection', function(socket) {
 
           // Wait for calibration
           context.on('calibrationsuccess', function(userId) {
+            console.log("calibrated for user", userId);
+
+            // Set body for calibrated user
+            activeBody = new Body(userId);
+
             socket.emit('game start');
           });
         } else {
