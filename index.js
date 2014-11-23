@@ -99,7 +99,7 @@ setInterval(function() {
       active: isRightHandActive()
     });
   });
-}, 100);
+}, 50);
 
 var GameSession = function(id) {
   this.id = id;
