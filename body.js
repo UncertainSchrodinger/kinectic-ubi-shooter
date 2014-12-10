@@ -31,6 +31,8 @@ function Body(id) {
 
   this.rightHand = null;
   this.rightShoulder = null;
+
+  this.calibrated = false;
 }
 
 Body.prototype.setLeftHand = function(x, y, z) {
@@ -77,6 +79,14 @@ Body.prototype.isRightHandActive = function() {
   var angle = calculateNormalizedArmAngle(this.rightShoulder, this.rightHand);
 
   return isInMovementRange(angle);
-}
+};
+
+Body.prototype.isCalibrated = function() {
+  return this.calibrated;
+};
+
+Body.prototype.setAsCalibrated = function() {
+  this.calibrated = true;
+};
 
 module.exports = Body;

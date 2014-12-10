@@ -18,6 +18,20 @@ var gestures = [];
 
 var activeBody = new Body(0);
 
+[
+  'newuser',
+  'userexit',
+  'lostuser',
+  'posedetected',
+  'calibrationstart',
+  'calibrationsucceed',
+  'calibrationfail'
+].forEach(function(eventType) {
+  context.on(eventType, function(userId) {
+    console.log('User %d emitted event: %s', userId, eventType);
+  });
+});
+
 context.on('left_shoulder', function(user, x, y, z) {
   if (user === activeBody.id) {
     activeBody.setLeftShoulder(x, y, z);
@@ -154,6 +168,7 @@ io.on('connection', function(socket) {
 
             // Set body for calibrated user
             activeBody = new Body(userId);
+            activeBody.setAsCalibrated();
 
             socket.emit('game start');
           });
@@ -198,6 +213,11 @@ io.on('connection', function(socket) {
             console.log("Could not save game to session!");
             return fail(fn)
           };
+
+          // Check if we already have a calibrated user
+          if (activeBody.isCalibrated()) {
+            socket.emit('game start');
+          }
 
           success(session, fn);
         });
