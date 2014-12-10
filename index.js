@@ -123,6 +123,7 @@ io.on('connection', function(socket) {
 
   socket.on('game end', function(data, fn) {
 
+    activeBody = new Body(-1);
     // Update game count
     GameSession.findByIdAndUpdate(socket.channelId, {
       gameEndedAt: Date.now()
