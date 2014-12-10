@@ -1,8 +1,8 @@
 pulseElement = (elem) ->
   elem.animate({
-    'font-size': '12em'
+    'font-size': '120px'
   }, { duration: 80 }).animate({
-    'font-size': '10em'
+    'font-size': '100px'
   }, { duration: 80 })
 
 channelId = window.location.pathname.split('/').slice(-1)[0]

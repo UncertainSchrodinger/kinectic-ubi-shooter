@@ -24,8 +24,20 @@
       }
 
       .huge-icon {
-        font-size: 10em;
-        margin: 0 auto;
+        text-align: center;
+        position: fixed;
+        font-size: 100px;
+        width: 100px;
+        height: 100px;
+        bottom: 10%;
+      }
+
+      .fa-arrow-left {
+        left: 10%;
+      }
+
+      .fa-arrow-right {
+        right: 10%;
       }
 
       button {
@@ -33,8 +45,6 @@
         margin-top: 5px;
         margin-bottom: 2em;
         color: #fff;
-        width: 200px;
-        height: 100px;
         background-color: #428bca;
         border-color: #357ebd;
         padding: 6px 12px;
@@ -61,11 +71,11 @@
   <body>
 
     <div class="controller-container">
-      <i id="move-left" class="fa fa-arrow-left huge-icon"></i>
       <div class="controls">
         <button id="quit">Quit</button>
         <button id="replay">Replay</button>
       </div>
+      <i id="move-left" class="fa fa-arrow-left huge-icon"></i>
       <i id="move-right" class="fa fa-arrow-right huge-icon"></i>
     </div>
 

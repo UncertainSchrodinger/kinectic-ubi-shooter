@@ -16,7 +16,7 @@ var db = mongoose.connection;
 // List of sockets listening for gestures
 var gestures = [];
 
-var activeBody = new Body(0);
+var activeBody = new Body(-1);
 
 [
   'newuser',
@@ -57,17 +57,19 @@ context.on('right_hand', function(user, x, y, z) {
 });
 
 setInterval(function() {
-  gestures.forEach(function(socket) {
-    socket.emit('controller state', {
-      direction: 'left',
-      active: activeBody.isLeftHandActive()
-    });
+  if (activeBody.isCalibrated()) {
+    gestures.forEach(function(socket) {
+      socket.emit('controller state', {
+        direction: 'left',
+        active: activeBody.isLeftHandActive()
+      });
 
-    socket.emit('controller state', {
-      direction: 'right',
-      active: activeBody.isRightHandActive()
+      socket.emit('controller state', {
+        direction: 'right',
+        active: activeBody.isRightHandActive()
+      });
     });
-  });
+  }
 }, 50);
 
 app.set('view engine', 'ejs');
@@ -124,6 +126,8 @@ io.on('connection', function(socket) {
   socket.on('game end', function(data, fn) {
 
     activeBody = new Body(-1);
+    gestures = [];
+
     // Update game count
     GameSession.findByIdAndUpdate(socket.channelId, {
       gameEndedAt: Date.now()
@@ -159,12 +163,14 @@ io.on('connection', function(socket) {
 
         // Check if this is a gesture player and save socket
         if (data.gestures) {
-          gestures.push(socket);
 
           session.markAsKinectGestureBased();
 
           // Wait for calibration
           context.on('calibrationsuccess', function(userId) {
+            // Start emitting events to socket
+            gestures.push(socket);
+
             console.log("calibrated for user", userId);
 
             // Set body for calibrated user
