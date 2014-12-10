@@ -794,8 +794,8 @@ function Game() {
     var width = imageRepository.enemy.width;
     var x = 100;
     var y = -height;
-    var spacer = y * 1.5;
-    for (var i = 1; i <= 18; i++) {
+    var spacer = y * 5.5;
+    for (var i = 1; i <= 5; i++) {
       this.enemyPool.get(x, y, 2);
       x += width + 25;
       if (i % 6 == 0) {
