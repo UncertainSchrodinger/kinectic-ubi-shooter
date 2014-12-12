@@ -9,6 +9,9 @@ channelId = window.location.pathname.split('/').slice(-1)[0]
 
 connection = new Connection
 
+downEvent = window.navigator.msPointerEnabled ? "MSPointerDown" : "touchstart";
+upEvent = window.navigator.msPointerEnabled ? "MSPointerUp" : "touchend";
+
 connection.joinPlayer channelId,
   success: ->
     console.log("joining ok")
@@ -17,18 +20,18 @@ connection.joinPlayer channelId,
 
 controller = new Controller(connection)
 
-$('#move-left').on 'touchstart', ->
+$('#move-left').on downEvent, ->
   pulseElement($('#move-left'))
   controller.startMoveLeft()
 
-$('#move-left').on 'touchend', ->
+$('#move-left').on upEvent, ->
   controller.stopMoveLeft()
 
-$('#move-right').on 'touchstart', ->
+$('#move-right').on downEvent, ->
   pulseElement($('#move-right'))
   controller.startMoveRight()
 
-$('#move-right').on 'touchend', ->
+$('#move-right').on upEvent, ->
   controller.stopMoveRight()
 
 $('#replay').click ->
